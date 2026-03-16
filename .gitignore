@@ -1,0 +1,26 @@
+# Database
+db_data/
+
+# Environment variables
+.env
+.env.docker
+.env.local
+
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+
+# Prisma generated
+backend/node_modules/.prisma/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

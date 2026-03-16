@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  username     String        @unique
+  email        String        @unique
+  password     String
+  role         Role          @default(USER)
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  categories   Category[]
+  auditLogs    AuditLog[]
+  preference   UserPreference?
+}
+
+model UserPreference {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  backgroundType  String   @default("default")
+  backgroundColor String?
+  gradientFrom    String?
+  gradientTo      String?
+  gradientAngle   Int      @default(135)
+  backgroundImage String?  @db.Text
+  customCss       String?  @db.Text
+  welcomeText     String?
+  avatarImage     String?  @db.Text
+  updatedAt       DateTime @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  username  String?
+  action    String
+  detail    String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model Currency {
+  id           Int           @id @default(autoincrement())
+  code         String        @unique
+  name         String
+  symbol       String
+  isDefault    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Category {
+  id           Int             @id @default(autoincrement())
+  name         String
+  icon         String          @default("💰")
+  color        String          @default("#6366f1")
+  type         TransactionType
+  isGlobal     Boolean         @default(false)
+  userId       Int?
+  user         User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  createdAt    DateTime        @default(now())
+
+  @@unique([name, type, userId])
+}
+
+model LoginAttempt {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  createdAt DateTime @default(now())
+
+  @@index([ip])
+  @@index([createdAt])
+}
+
+model IpBlacklist {
+  id        Int       @id @default(autoincrement())
+  ip        String    @unique
+  reason    String?
+  bannedAt  DateTime  @default(now())
+  expiresAt DateTime?
+  bannedBy  String?
+}
+
+model LoginSetting {
+  id                 Int     @id @default(1)
+  maxAttempts        Int     @default(5)
+  windowMinutes      Int     @default(15)
+  banMinutes         Int     @default(0)
+  allowRegistration  Boolean @default(true)
+}
+
+model Transaction {
+  id         Int             @id @default(autoincrement())
+  amount     Decimal         @db.Decimal(12, 2)
+  type       TransactionType
+  note       String?
+  date       DateTime        @default(now())
+  categoryId Int
+  category   Category        @relation(fields: [categoryId], references: [id])
+  currencyId Int?
+  currency   Currency?       @relation(fields: [currencyId], references: [id])
+  userId     Int
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
