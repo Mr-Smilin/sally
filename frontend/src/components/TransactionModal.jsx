@@ -33,7 +33,7 @@ export default function TransactionModal({ onClose, onSaved, transaction }) {
     if (d === '.' && amount.includes('.')) return
     if (amount === '0' && d !== '.') return setAmount(d)
     if (amount.length >= 10) return
-    if (amount.includes('.') && amount.split('.')[1]?.length >= 2) return
+    if (amount.includes('.') && amount.split('.')[1]?.length >= 6) return
     setAmount(a => a + d)
   }
 
