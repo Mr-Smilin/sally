@@ -1,6 +1,6 @@
 {
   "name": "tally-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon --env-file=.env src/index.js",

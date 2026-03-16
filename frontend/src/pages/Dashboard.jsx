@@ -9,6 +9,7 @@ export default function Dashboard() {
 	const { pref } = useTheme();
 	const [summary, setSummary] = useState(null);
 	const [recent, setRecent] = useState([]);
+	const [assets, setAssets] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [month, setMonth] = useState(() => {
 		const d = new Date();
@@ -35,6 +36,10 @@ export default function Dashboard() {
 		setSummary(s);
 		setRecent(r.transactions);
 	};
+
+	useEffect(() => {
+		transactionApi.assets().then(setAssets);
+	}, []);
 
 	useEffect(() => {
 		load();
@@ -65,6 +70,24 @@ export default function Dashboard() {
 					<p className="text-xs text-gray-400">{today}</p>
 				</div>
 			</div>
+
+			{assets.length > 0 && (
+				<div className="card p-4">
+					<p className="text-xs text-gray-400 mb-3">持有資產</p>
+					<div className="space-y-2">
+						{assets.map((a, i) => (
+							<div key={i} className="flex items-center justify-between">
+								<span className="text-sm text-gray-600">
+									{a.currency ? `${a.currency.code} · ${a.currency.name}` : '未指定幣別'}
+								</span>
+								<span className={`font-semibold ${a.balance >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
+									{a.currency?.symbol || ''} {fmt(a.balance)}
+								</span>
+							</div>
+						))}
+					</div>
+				</div>
+			)}
 
 			<div className="flex items-center justify-between">
 				<input

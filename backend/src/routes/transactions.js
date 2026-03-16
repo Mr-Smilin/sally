@@ -64,6 +64,25 @@ router.get('/summary', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+router.get('/assets', async (req, res, next) => {
+  try {
+    const where = req.user.role === 'ADMIN' ? {} : { userId: req.user.id };
+    const transactions = await prisma.transaction.findMany({
+      where,
+      include: { currency: true },
+    });
+
+    const map = {};
+    for (const t of transactions) {
+      const key = t.currencyId ?? 'none';
+      if (!map[key]) map[key] = { currency: t.currency, balance: 0 };
+      map[key].balance += t.type === 'INCOME' ? Number(t.amount) : -Number(t.amount);
+    }
+
+    res.json(Object.values(map));
+  } catch (err) { next(err); }
+});
+
 router.get('/report', async (req, res, next) => {
   try {
     const { startDate, endDate, userIds, categoryIds, currencyIds } = req.query;

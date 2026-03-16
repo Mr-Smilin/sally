@@ -35,6 +35,7 @@ export const authApi = {
 export const transactionApi = {
   list: (params) => api.get('/transactions', { params }),
   summary: (params) => api.get('/transactions/summary', { params }),
+  assets: () => api.get('/transactions/assets'),
   report: (params) => api.get('/transactions/report', { params }),
   create: (data) => api.post('/transactions', data),
   update: (id, data) => api.put(`/transactions/${id}`, data),
