@@ -66,7 +66,7 @@ router.get('/summary', async (req, res, next) => {
 
 router.get('/assets', async (req, res, next) => {
   try {
-    const where = req.user.role === 'ADMIN' ? {} : { userId: req.user.id };
+    const where = { userId: req.user.id };
     const transactions = await prisma.transaction.findMany({
       where,
       include: { currency: true },
