@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { categoryApi, transactionApi, currencyApi } from '../api'
+import { useToast } from '../context/ToastContext'
 
 const DIGITS = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', '⌫']
 
 export default function TransactionModal({ onClose, onSaved, transaction }) {
+  const { addToast } = useToast()
   const [type, setType] = useState(transaction?.type || 'EXPENSE')
   const [amount, setAmount] = useState(transaction ? String(transaction.amount) : '')
   const [categoryId, setCategoryId] = useState(transaction?.categoryId || null)
@@ -47,6 +49,7 @@ export default function TransactionModal({ onClose, onSaved, transaction }) {
       } else {
         await transactionApi.create(data)
       }
+      addToast(transaction ? '記帳已更新' : '記帳已儲存', 'success')
       onSaved()
     } catch (err) {
       console.error(err)

@@ -34,11 +34,11 @@ body {
   @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base;
 }
 
-@keyframes toast-slide-in {
-  from { opacity: 0; transform: translateX(100%); }
-  to   { opacity: 1; transform: translateX(0); }
+@keyframes toast-float-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.toast-enter {
-  animation: toast-slide-in 0.25s ease-out;
+.toast-float-up {
+  animation: toast-float-up 0.3s ease-out;
 }

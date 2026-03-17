@@ -22,11 +22,12 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none" style={{ maxWidth: '320px' }}>
+      <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center gap-2 pointer-events-none">
         {toasts.map(t => (
           <div
             key={t.id}
-            className={`flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium pointer-events-auto toast-enter ${COLORS[t.type]}`}
+            className={`flex items-center gap-2 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium pointer-events-auto toast-float-up ${COLORS[t.type]}`}
+            style={{ whiteSpace: 'nowrap' }}
           >
             <span className="text-base leading-none">{ICONS[t.type]}</span>
             <span>{t.message}</span>
